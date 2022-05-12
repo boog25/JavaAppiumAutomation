@@ -6,13 +6,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
+
+import static org.junit.Assert.assertTrue;
 
 public class FirstTest {
 
@@ -42,6 +43,7 @@ public class FirstTest {
     public void MainTest() {
         System.out.println("My Test");
     }
+
 
     @Test
     public void Test() {
@@ -87,8 +89,9 @@ public class FirstTest {
                 "Cannot find element",
                 15);
     }
+
     @Test
-    public void saveArticles(){
+    public void saveArticles() {
         WebElement element_skip = driver.findElementByXPath("//*[@resource-id='org.wikipedia:id/fragment_onboarding_skip_button']");
         element_skip.click();
 
@@ -176,6 +179,48 @@ public class FirstTest {
         );
     }
 
+    @Test
+    public void testAssertTitleArticle() {
+        WebElement element_skip = driver.findElementByXPath("//*[@resource-id='org.wikipedia:id/fragment_onboarding_skip_button']");
+        element_skip.click();
+
+        searchElementAndClick(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia",
+                5
+        );
+        String search_line = "Java";
+        searchElementAndSendKeys(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_src_text']"),
+                search_line,
+                "Cannot find search_line",
+                5
+        );
+        String title_search = assertElementPresent(
+                By.xpath("//*[contains(@text, 'Object-oriented programming language')]"),
+                "text",
+                "Cannot find titles in search",
+                5
+        );
+        searchElementAndClick(
+                By.xpath("//*[contains(@text, 'Java (programming language)')]"),
+                "Cannot find Articles",
+                15
+        );
+
+        String title_article = assertElementPresent(
+                By.xpath("//*[@resource-id='pcs-edit-section-title-description']"),
+                "text",
+                "Cannot find titles",
+                5);
+
+        Assert.assertEquals(
+                "Cannot find titles article",
+                title_search,
+                title_article
+        );
+    }
+
     private WebElement assertElementHasText(By by, String error_message, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage((error_message + "\n"));
@@ -195,22 +240,28 @@ public class FirstTest {
         element.sendKeys(value);
         return element;
     }
-    protected void swipeSide(By by, String error_message){
-        WebElement element_swipe = assertElementHasText(by,error_message,10);
+
+    protected void swipeSide(By by, String error_message) {
+        WebElement element_swipe = assertElementHasText(by, error_message, 10);
 
         int left_x = element_swipe.getLocation().getX();
         int right_x = left_x + element_swipe.getSize().getWidth();
         int upper_y = element_swipe.getLocation().getY();
         int lower_y = upper_y + element_swipe.getSize().getHeight();
-        int middle_y = (upper_y+lower_y)/2;
+        int middle_y = (upper_y + lower_y) / 2;
 
         TouchAction action = new TouchAction(driver);
         action
-                .press(right_x,middle_y)
+                .press(right_x, middle_y)
                 .waitAction(150)
-                .moveTo(left_x,middle_y)
+                .moveTo(left_x, middle_y)
                 .release()
                 .perform();
+    }
+
+    private String assertElementPresent(By by, String attribute, String error_message, long timeoutInSeconds) {
+        WebElement element = assertElementHasText(by, error_message, timeoutInSeconds);
+        return element.getAttribute(attribute);
     }
 
 }
