@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -20,6 +21,7 @@ public class FirstTest {
     private AppiumDriver driver;
 
     @Before
+
     public void setUp() throws Exception {
         DesiredCapabilities capabilities = new DesiredCapabilities();
 
@@ -32,6 +34,7 @@ public class FirstTest {
         capabilities.setCapability("app", "C:/homework/JavaAppiumAutomation/apks/wikipedia.apk");
 
         driver = new AndroidDriver(new URL("http://0.0.0.0:4723/wd/hub"), capabilities);
+        driver.rotate(ScreenOrientation.PORTRAIT);
     }
 
     @After
@@ -219,6 +222,7 @@ public class FirstTest {
                 title_search,
                 title_article
         );
+
     }
 
     private WebElement assertElementHasText(By by, String error_message, long timeoutInSeconds) {
