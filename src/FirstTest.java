@@ -1,6 +1,8 @@
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -47,7 +49,7 @@ public class FirstTest {
         element_skip.click();
 
         WebElement element_to_enter_search = assertElementHasText(
-                "//*[contains(@text, 'Search Wikipedia')]",
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
                 "Cannot find element",
                 5
         );
@@ -60,51 +62,155 @@ public class FirstTest {
         element_skip.click();
 
         searchElementAndClick(
-                "//*[contains(@text, 'Search Wikipedia')]",
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
                 "Cannot find element",
                 5
         );
         searchElementAndSendKeys(
-                "//*[contains(@text, 'Search…')]",
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_src_text']"),
                 "Kotlin",
                 "Cannot find element",
                 5
         );
         assertElementHasText(
-                "//*[@resource-id='org.wikipedia:id/page_list_item_title']",
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_title']"),
                 "Cannot find element",
                 15
         );
         searchElementAndClick(
-                "//*[@resource-id='org.wikipedia:id/search_close_btn']",
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_close_btn']"),
                 "Cannot find element",
                 20
         );
         assertElementHasText(
-                "//*[@resource-id='org.wikipedia:id/search_container']",
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_container']"),
                 "Cannot find element",
                 15);
     }
+    @Test
+    public void saveArticles(){
+        WebElement element_skip = driver.findElementByXPath("//*[@resource-id='org.wikipedia:id/fragment_onboarding_skip_button']");
+        element_skip.click();
 
-    private WebElement assertElementHasText(String xpath, String error_message, long timeoutInSeconds) {
+        searchElementAndClick(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia",
+                5
+        );
+        String search_line = "Java";
+        searchElementAndSendKeys(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_src_text']"),
+                search_line,
+                "Cannot find search_line",
+                5
+        );
+        searchElementAndClick(
+                By.xpath("//*[contains(@text, 'High-level programming language')]"),
+                "Cannot find Articles One",
+                15
+        );
+        searchElementAndClick(
+                By.xpath("//*[contains(@text, 'Save')]"),
+                "Cannot find bottom Add",
+                15
+        );
+        searchElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_toolbar_button_search']"),
+                "Cannot find bottom Search",
+                15
+        );
+        searchElementAndSendKeys(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_src_text']"),
+                search_line,
+                "Cannot find element",
+                5
+        );
+        searchElementAndClick(
+                By.xpath("//*[contains(@text, 'Island in Southeast Asia')]"),
+                "Cannot find Articles Two",
+                15
+        );
+        searchElementAndClick(
+                By.xpath("//*[contains(@text, 'Save')]"),
+                "Cannot find bottom Add",
+                10
+        );
+        searchElementAndClick(
+                By.xpath("//android.widget.ImageButton[@content-desc='Navigate up']"),
+                "Cannot find bottom back1",
+                5
+        );
+        searchElementAndClick(
+                By.xpath("//android.widget.ImageButton[@content-desc='Navigate up']"),
+                "Cannot find bottom back2",
+                10
+        );
+        searchElementAndClick(
+                By.xpath("//android.widget.ImageButton"),
+                "Cannot find bottom back3",
+                5
+        );
+        searchElementAndClick(
+                By.xpath("//*[contains(@text, 'Saved')]"),
+                "Cannot find bottom Saved",
+                5
+        );
+        searchElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/recycler_view']"),
+                "Cannot find bottom Saved to Saved",
+                5
+        );
+        swipeSide(
+                By.xpath("//*[contains(@text, 'Island in Southeast Asia')]"),
+                "Cannot find articles"
+        );
+        searchElementAndClick(
+                By.xpath("//*[contains(@text, 'High-level programming language')]"),
+                "Cannot find articles",
+                5
+        );
+        assertElementHasText(
+                By.xpath("//*[contains(@text, 'High-level programming language')]"),
+                "Cannot find title",
+                5
+        );
+    }
+
+    private WebElement assertElementHasText(By by, String error_message, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage((error_message + "\n"));
-        By by = By.xpath(xpath);
         return wait.until(
                 ExpectedConditions.presenceOfElementLocated(by)
         );
     }
 
-    private WebElement searchElementAndClick(String xpath, String error_message, long timeoutInSeconds) {
-        WebElement element = assertElementHasText(xpath, error_message, timeoutInSeconds);
+    private WebElement searchElementAndClick(By by, String error_message, long timeoutInSeconds) {
+        WebElement element = assertElementHasText(by, error_message, timeoutInSeconds);
         element.click();
         return element;
     }
 
-    private WebElement searchElementAndSendKeys(String xpath, String value, String error_message, long timeoutInSeconds) {
-        WebElement element = assertElementHasText(xpath, error_message, timeoutInSeconds);
+    private WebElement searchElementAndSendKeys(By by, String value, String error_message, long timeoutInSeconds) {
+        WebElement element = assertElementHasText(by, error_message, timeoutInSeconds);
         element.sendKeys(value);
         return element;
+    }
+    protected void swipeSide(By by, String error_message){
+        WebElement element_swipe = assertElementHasText(by,error_message,10);
+
+        int left_x = element_swipe.getLocation().getX();
+        int right_x = left_x + element_swipe.getSize().getWidth();
+        int upper_y = element_swipe.getLocation().getY();
+        int lower_y = upper_y + element_swipe.getSize().getHeight();
+        int middle_y = (upper_y+lower_y)/2;
+
+        TouchAction action = new TouchAction(driver);
+        action
+                .press(right_x,middle_y)
+                .waitAction(150)
+                .moveTo(left_x,middle_y)
+                .release()
+                .perform();
     }
 
 }
