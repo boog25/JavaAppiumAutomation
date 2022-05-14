@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ScreenOrientation;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -199,29 +200,15 @@ public class FirstTest {
                 "Cannot find search_line",
                 5
         );
-        String title_search = assertElementPresent(
-                By.xpath("//*[contains(@text, 'Object-oriented programming language')]"),
-                "text",
-                "Cannot find titles in search",
-                5
-        );
+
+
         searchElementAndClick(
                 By.xpath("//*[contains(@text, 'Java (programming language)')]"),
                 "Cannot find Articles",
                 15
         );
 
-        String title_article = assertElementPresent(
-                By.xpath("//*[@resource-id='pcs-edit-section-title-description']"),
-                "text",
-                "Cannot find titles",
-                5);
-
-        Assert.assertEquals(
-                "Cannot find titles article",
-                title_search,
-                title_article
-        );
+        WebElement searchElement = driver.findElement(By.xpath("//*[contains(@text, 'Java (programming language)')]"));
 
     }
 
