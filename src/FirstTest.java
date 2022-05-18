@@ -5,17 +5,14 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.ScreenOrientation;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
+import java.util.List;
 
-import static org.junit.Assert.assertTrue;
 
 public class FirstTest {
 
@@ -201,14 +198,17 @@ public class FirstTest {
                 5
         );
 
+String search_title = "//*[contains(@text, 'Java (programming language)')]";
 
         searchElementAndClick(
                 By.xpath("//*[contains(@text, 'Java (programming language)')]"),
-                "Cannot find Articles",
+                "Cannot find titles",
                 15
         );
-
-        WebElement searchElement = driver.findElement(By.xpath("//*[contains(@text, 'Java (programming language)')]"));
+      assertElementPresent(
+              By.xpath(search_title),
+              "Cannot find Articles"
+      );
 
     }
 
@@ -230,6 +230,7 @@ public class FirstTest {
         WebElement element = assertElementHasText(by, error_message, timeoutInSeconds);
         element.sendKeys(value);
         return element;
+
     }
 
     protected void swipeSide(By by, String error_message) {
@@ -249,10 +250,16 @@ public class FirstTest {
                 .release()
                 .perform();
     }
+private  int getAmountElements (By by){
+        List element = driver.findElements(by);
+        return element.size();
+}
 
-    private String assertElementPresent(By by, String attribute, String error_message, long timeoutInSeconds) {
-        WebElement element = assertElementHasText(by, error_message, timeoutInSeconds);
-        return element.getAttribute(attribute);
-    }
-
+    private void assertElementPresent(By by, String error_message) {
+        int amount_elements = getAmountElements(by);
+        if (amount_elements > 0){
+            String default_message = "An element'" + by.toString() + "'supposed to be not present";
+            throw new AssertionError(default_message + " " + error_message);
+                    }
+        }
 }
