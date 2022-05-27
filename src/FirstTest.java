@@ -58,7 +58,7 @@ public class FirstTest extends CoreTestCase {
         SearchPageObject.clickArticlSearchResult("High-level programming language");
         SearchPageObject.clickSaveButton();
         SearchPageObject.initSearchInput();
-        SearchPageObject.typeSearchLine("java");
+        SearchPageObject.clickSearchInTitle("java");
         SearchPageObject.clickArticlSearchResult("Island in Southeast Asia");
         SearchPageObject.clickSaveButton();
         SearchPageObject.clickButtonBack();

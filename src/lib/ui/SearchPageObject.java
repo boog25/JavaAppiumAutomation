@@ -10,6 +10,7 @@ private static final String
     SEARCH_INPUT = "//*[@resource-id='org.wikipedia:id/search_src_text']",
     SEARCH_RESULT_BY_SUBSTRING_TPL = "//*[contains(@text,'{SUBSTRING}')]",
     SEARCH_CANCEL_BUTTON = "//*[@resource-id='org.wikipedia:id/search_close_btn']",
+    SEARCH_INPUT_IN_TITLE = "//*[@resource-id='org.wikipedia:id/page_toolbar_button_search']",
     CLICK_BUTTON_SAVE = "//*[@resource-id='org.wikipedia:id/page_actions_tab_layout']//*[contains(@text, 'Save')]",
     CLICK_BUTTON_BACK = "//android.widget.ImageButton[@content-desc='Navigate up']",
     CLICK_BUTTON_SAVED = "//*[contains(@text, 'Saved')]",
@@ -40,6 +41,9 @@ private static final String
         public void clickArticlSearchResult(String substring){
             String search_result_xpath = getResultSearchElement(substring);
             this.searchElementAndClick(By.xpath(search_result_xpath),"Cannot find and click result " +substring, 20);
+    }
+    public void clickSearchInTitle(String search_line){
+        this.searchElementAndSendKeys(By.xpath(SEARCH_INPUT_IN_TITLE),search_line,"Cannot find Search line",10);
     }
     public void waitForCancelButton(){
         this.assertElementPresent(By.xpath(SEARCH_CANCEL_BUTTON),"Find element cancel button");
